@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int result = 0;
+        int low, high;
+        low = 0, high = height.size() - 1;
+        while (low < high) {
+            int hl = height[low];
+            int hh = height[high];
+            int min;
+            bool MoveLow;
+            if (hl < hh) {
+                min = hl;
+                MoveLow = true;
+            } else {
+                min = hh;
+                MoveLow = false;
+            }
+
+            int curr_amount = min * (high - low);
+            if (curr_amount > result) {
+                result = curr_amount;
+            }
+
+            if (MoveLow) {
+                low++;
+            } else {
+                high--;
+            }
+        }
+
+        return result;
+    }
+};
