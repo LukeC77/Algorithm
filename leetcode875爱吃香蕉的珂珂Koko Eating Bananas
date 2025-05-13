@@ -1,0 +1,49 @@
+# the same with LCR 073
+
+class Solution {
+public:
+    int binarySearchK(vector<int>& piles, int h, int high, int low) {
+        int minK = -1;
+        int len = piles.size();
+        while (low <= high) {
+            int k = (high - low) / 2 + low;
+            // cout << k << endl;
+            long sum = 0;
+
+            //computer time consumption
+            for (int i = 0; i < len; i++) {
+                if (piles[i] <= k) {
+                    sum++;
+                } else {
+                    if (piles[i] % k == 0) {
+                        sum += (piles[i] / k);
+                    } else {
+                        sum += (piles[i] / k) + 1;
+                    }
+                }
+            }
+            
+            // cout << "sum=" << sum << endl;
+            if (sum <= h) {
+                minK = k;
+                high = k - 1;
+            } else {
+                low = k + 1;
+            }
+        }
+
+        return minK;
+    }
+
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int max;
+        max = piles[0];
+        int len = piles.size();
+        for (int i = 1; i < len; i++) {
+            if (piles[i] > max) max = piles[i];
+        }
+        //cout << "max=" << max << endl;
+
+        return binarySearchK(piles, h, max, 1);
+    }
+};
