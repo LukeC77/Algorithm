@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int left = 0;
+        int right = nums.size() - 1;
+        int result = -1;
+        while (left <= right) {
+            int mid = (right - left) / 2 + left;
+            if (nums[mid] == target) {
+                result = mid;
+                break;
+            } else if (nums[mid] < target){
+                //注意这里是>=。因为当数组是[1,2]时，nums[mid]=nums[left]
+                //为了进入我们想要的区间，必须使用等号。否则，会进入错误的区间。
+                if (nums[mid] >= nums[left]) {
+                    left = mid + 1;
+                } else {
+                    if (target >= nums[left]) {
+                        right = mid - 1;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+            } else if (nums[mid] > target){
+                if (nums[mid] < nums[left]) {
+                    right = mid - 1;
+                } else {
+                    if (target >= nums[left]) {
+                        right = mid - 1;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+};
