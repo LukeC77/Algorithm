@@ -1,0 +1,69 @@
+一种brute force method：不断比较两个有序数组的值，找到中位数
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size();
+        int m = nums2.size();
+        if ((m + n) % 2 == 0 ) {
+            int i, j;
+            i = j = 0;
+            int count = 0;
+            int median_idx1 = (m + n) / 2;
+            int median_idx2 = median_idx1 + 1;
+            float current;
+            float sum = 0;
+
+            while (count <= median_idx2) {
+                if (count == median_idx1 or count == median_idx2) {
+                    sum += current;
+                }
+
+                if (i < n and j < m) {
+                    if (nums1[i] <= nums2[j]) {
+                        current = nums1[i];
+                        i++;
+                    } else {
+                        current = nums2[j];
+                        j++;
+                    }
+                } else if (i == n and j < m) {
+                    current = nums2[j];
+                    j++;
+                } else if (i < n and j == m) {
+                    current = nums1[i];
+                    i++;
+                }
+                count++;                
+            }
+            
+            return sum / 2;
+
+        } else {
+            int i, j;
+            i = j = 0;
+            int count = 0;
+            int median_idx = (m + n) / 2 + 1;
+            float current;
+            while (count < median_idx) {
+                if (i < n and j < m) {
+                    if (nums1[i] <= nums2[j]) {
+                        current = nums1[i];
+                        i++;
+                    } else {
+                        current = nums2[j];
+                        j++;
+                    }
+                } else if (i == n and j < m) {
+                    current = nums2[j];
+                    j++;
+                } else if (i < n and j == m) {
+                    current = nums1[i];
+                    i++;
+                }
+                count++;
+            }
+
+            return current;
+        }
+    }
+};
