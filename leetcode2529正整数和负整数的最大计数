@@ -1,0 +1,29 @@
+class Solution {
+public:
+    // return the largest idex of elements that is less than target
+    int ltTarget(vector<int>& nums, int target) {
+        int len = nums.size();
+        int L, R;
+        L = 0;
+        R = len - 1;
+        while (L <= R) {
+            int mid = L + (R - L) / 2;
+            if (nums[mid] < target) { //[L, mid] < target
+                L = mid + 1;
+            } else { //[mid, R] >= target
+                R = mid - 1;
+            }
+        }
+        return R;
+    }
+
+    int maximumCount(vector<int>& nums) {
+        int len = nums.size();
+        int neg_end = ltTarget(nums, 0);// [-1, len - 1]
+        int pos_start = ltTarget(nums, 1) + 1;// [0, len]
+
+        int num_pos = len - pos_start;
+        int num_neg = neg_end + 1;
+        return max(num_pos, num_neg);
+    }
+};
