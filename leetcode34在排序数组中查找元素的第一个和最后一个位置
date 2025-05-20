@@ -1,0 +1,59 @@
+class Solution {
+public:
+    int lowerBound (vector<int>& nums, int target) {
+        int L, R;
+        int len = nums.size();
+        L = 0;
+        R = len - 1;
+
+        while (L <= R) {
+            int mid = L + (R - L) / 2;
+            if (nums[mid] < target) {
+                L = mid + 1;
+            } else {
+                R = mid - 1;
+            }
+        }
+        
+        if (L >= len) {
+            return -1;
+        }
+        if (nums[L] != target) {
+            return -1;
+        }
+        return L;
+    }
+
+    int upperBound (vector<int>& nums, int target) {
+        int L, R;
+        int len = nums.size();
+        L = 0;
+        R = len - 1;
+
+        while (L <= R) {
+            int mid = L + (R - L) / 2;
+            if (nums[mid] <= target) {
+                L = mid + 1;
+            } else {
+                R = mid - 1;
+            }
+        }
+        
+        if (R < 0) {
+            return -1;
+        }
+        if (nums[R] != target) {
+            return -1;
+        }
+        return R;
+    }
+
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> result (2, 0);
+        result[0] = lowerBound(nums, target);
+        result[1] = upperBound(nums, target);
+        return result;
+    }
+};
+
+## upperBound是可选的：可以复用lowerBound(nums,target + 1) - 1来找上界，前提是target在nums中存在。所以先找lowerBound
