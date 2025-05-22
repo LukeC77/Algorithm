@@ -1,0 +1,59 @@
+class Solution {
+public:
+    /*
+    d=2 num=8
+        9 10  11 13 15
+        L      M     R
+        11 > 8
+        11-8=3, we know [M, R] > d, 
+        then R=M-1
+
+        1  2  3  9 10
+        L     M     R
+        3 < 8
+        8-3=5, we know [L, M] > d, 
+        then L=M+1
+
+    */
+    bool satisfyDist(int num, vector<int>& arr2, int d, int len) {
+        bool Satisfied = true;
+        int L = 0;
+        int R = len - 1;
+        while (L <= R) {
+            int mid = L + (R - L) / 2;
+            if (num < arr2[mid]) {
+                if (arr2[mid] - num <= d) {
+                    return false;
+                }
+                R = mid - 1;
+            } else if (num > arr2[mid]) {
+                if (num - arr2[mid] <= d) {
+                    return false;
+                }
+                L = mid + 1;
+            } else {
+                return false;
+            }
+        }
+
+        return Satisfied;
+    }
+
+    int findTheDistanceValue(vector<int>& arr1, vector<int>& arr2, int d) {
+        //sort arr2
+        sort (arr2.begin(), arr2.end());
+
+        int n = arr1.size();
+        int m = arr2.size();
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (satisfyDist(arr1[i], arr2, d, m)) {
+                result++;
+            }
+        }
+
+        return result;
+
+    }
+};
