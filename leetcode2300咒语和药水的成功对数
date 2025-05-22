@@ -1,0 +1,64 @@
+class Solution {
+public:
+    // logic of lowerBound
+    /* consider following situation
+    * * * * 3 * * * *  
+            L           3 * [0, L-1] < success
+            R           3 * [R+1, m] >= success
+            M
+    if 3 * spells[M] < success, L=M+1
+    if 3 * spells[M] >= success, R=M+1
+    Always return L
+
+    3 * * * *  
+    L           3 * [0, L-1] < success
+    R           3 * [R+1, m] >= success
+    M
+    if 3 * spells[M] < success, L=M+1
+    if 3 * spells[M] >= success, R=M+1 
+    Always return L
+
+    * * * * 3  
+            L           3 * [0, L-1] < success
+            R           3 * [R+1, m] >= success
+            M
+    if 3 * spells[M] < success, L=M+1, which is equal to len of potions
+    if 3 * spells[M] >= success, R=M+1 
+    Return L    
+    */
+
+    // lowerBound return the lowerbound index of potions such that
+    // spell * postions[idx] >= success. If all product are less than
+    // success, return the size of potions.
+    int lowerBound(int spell, vector<int>& potions, long long success, int len) {
+        int L = 0;
+        int R = len - 1;
+        while (L <= R) {
+            int mid = L + (R - L) / 2;
+            long long power = (long long)spell * potions[mid];
+            if (power < success) {
+                L = mid + 1;
+            } else {
+                R = mid - 1;
+            }
+        }
+        return L;
+    }
+
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
+        //sort potions for binary searching
+        sort(potions.begin(), potions.end());
+
+        int n = spells.size();
+        int m = potions.size();
+        vector<int> pairs(n, 0);
+        
+
+        for (int i = 0; i < n; i++) {
+            int idx = lowerBound(spells[i], potions, success, m);
+            pairs[i] = m - idx;
+        }
+
+        return pairs;
+    }
+};
