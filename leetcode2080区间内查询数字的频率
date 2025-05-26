@@ -1,0 +1,65 @@
+class RangeFreqQuery {
+public:
+    unordered_map<int, vector<int>> table;
+
+    RangeFreqQuery(vector<int>& arr) {
+        int n = arr.size();
+
+        for (int i = 0; i < n; i++) {
+            if (table.find(arr[i]) == table.end()) {
+                table.emplace(arr[i], vector<int>{i});
+            } else {
+                table[arr[i]].push_back(i);
+            }
+        }
+    }
+    
+    int query(int left, int right, int value) {
+        auto it = table.find(value);
+        if (it == table.end()) {
+            return 0;
+        } else {
+            int start = lowerBound(it->second, left);
+            int end = upperBound(it->second, right);
+            return end - start + 1;
+        }
+    }
+
+private:
+    int lowerBound(vector<int>& arr, int target) {
+        int len = arr.size();
+        int L = 0;
+        int R = len - 1;
+        while (L <= R) {
+            int M = L + (R - L) / 2;
+            if (arr[M] < target) {
+                L = M + 1;
+            } else {
+                R = M - 1;
+            }
+        }
+        return L;
+    }
+
+    int upperBound(vector<int>& arr, int target) {
+        int len = arr.size();
+        int L = 0;
+        int R = len - 1;
+        while (L <= R) {
+            int M = L + (R - L) / 2;
+            if (arr[M] <= target) {
+                L = M + 1;
+            } else {
+                R = M - 1;
+            }
+        }
+        return R;
+    }
+
+};
+
+/**
+ * Your RangeFreqQuery object will be instantiated and called as such:
+ * RangeFreqQuery* obj = new RangeFreqQuery(arr);
+ * int param_1 = obj->query(left,right,value);
+ */
