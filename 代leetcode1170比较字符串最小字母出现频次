@@ -1,0 +1,57 @@
+class Solution {
+public:
+    int f(string& str) {
+        int len = str.size();
+        vector<int> alphabet(26, 0);
+        //computer counts for each letter
+        for (int i = 0; i < len; i++) {
+            int id = str[i] - 'a';
+            alphabet[id]++;
+        }
+        //return the num of the smallest letter
+        for (int i = 0; i < 26; i++) {
+            if (alphabet[i] != 0) {
+                return alphabet[i];
+            }
+        }
+        //if the word is null, return -1 for error report
+        return -1;
+    }
+
+    int lowerBound(vector<int>& array, int target) {
+        int len = array.size();
+        int L = 0;
+        int R = len - 1;
+        while (L <= R) {
+            int M = L + (R - L) / 2;
+            if (array[M] <= target) {
+                L = M + 1;
+            } else {
+                R = M - 1;
+            }
+        }
+        return L;
+    }
+
+    vector<int> numSmallerByFrequency(vector<string>& queries, vector<string>& words) {
+        int w_len = words.size();
+        int q_len = queries.size();
+        //computer f(s) for each word in words
+        vector<int> wordsFQ(w_len, 0);
+        for (int i = 0; i < w_len; i++) {
+            wordsFQ[i] = f(words[i]);
+        }
+
+        //sort wordsFQ
+        sort(wordsFQ.begin(), wordsFQ.end());
+
+        // calculate answer
+        vector<int> answer(q_len, 0);
+        for (int i = 0; i < q_len; i++) {
+            int frequency = f(queries[i]);
+            answer[i] = w_len - lowerBound(wordsFQ, frequency);
+        }
+
+        return answer;
+    }
+};
