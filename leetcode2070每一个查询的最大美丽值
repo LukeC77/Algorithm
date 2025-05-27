@@ -1,0 +1,58 @@
+class Solution {
+public:
+    // if all entries > target, return -1
+    int upperBound(vector<vector<int>>& items, int target) {
+        int len = items.size();
+        int L = 0;
+        int R = len - 1;
+        while (L <= R) {
+            int M = L + (R - L) / 2;
+            if (items[M][0] <= target) {
+                L = M + 1;
+            } else {
+                R = M - 1;
+            }
+        }
+        return R;
+    }
+
+    vector<int> maximumBeauty(vector<vector<int>>& items, vector<int>& queries) {
+        sort(items.begin(), items.end());
+        
+        unordered_map<int, int> table;
+
+        int n = items.size();
+        int max_beauty = 0;
+        for (int i = 0; i < n; i++) {
+            if (max_beauty < items[i][1]) max_beauty = items[i][1];
+
+            auto it = table.find(items[i][0]);
+            if (it == table.end()) {
+                table.emplace(items[i][0], max_beauty);
+            } else {
+                if (it->second < items[i][1]) {
+                    it->second = items[i][1];
+                    max_beauty = items[i][1];
+                }
+            }
+        }
+        
+        //test: print table
+        // for (const auto& entry : table) {
+        //     cout << entry.first << ": " << entry.second << endl;
+        // }
+
+        int m = queries.size();
+        vector<int> answer(m, 0);
+        for (int i = 0; i < m; i++) {
+            int upperID = upperBound(items, queries[i]);
+            if (upperID == -1) {
+                answer[i] = 0;
+            } else {
+                answer[i] = table[items[upperID][0]];
+            }
+        }
+
+        return answer;
+    }
+};
