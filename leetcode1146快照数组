@@ -1,0 +1,72 @@
+class SnapshotArray {
+public:
+    SnapshotArray(int length) {
+        size = length;
+        array = vector<int> (length, 0);
+        archives = vector<vector<pair<int, int>>> (length);
+    }
+    
+    void set(int index, int val) {
+        array[index] = val;
+        if (isSet.find(index) == isSet.end()) {
+            isSet.emplace(index);
+        }
+    }
+    
+    int snap() {
+        snap_call++;
+        int snap_id = snap_call - 1;
+        for (int index : isSet) {
+            archives[index].emplace_back(snap_id, array[index]);
+        }
+        isSet.clear();
+        return snap_id;
+    }
+    
+    int get(int index, int snap_id) {
+        vector<pair<int, int>> &archive = archives[index];
+        int len = archive.size();
+
+        // if there is no updating for the val at current index, it is 0. 
+        if (len == 0) {
+            return 0;
+        }
+
+        // find upper bound
+        int L = 0;
+        int R = len - 1;
+        while (L <= R) {
+            int M = L + (R - L) / 2;
+            if (archive[M].first <= snap_id) {
+                L = M + 1;
+            } else {
+                R = M - 1;
+            }
+        }
+
+        // At current snap_id, the value at this index hasn't be updated
+        if (R == -1) {
+            return 0;
+        } else {
+            return archive[R].second;
+        }
+
+
+    }
+
+private:
+    int snap_call = 0;
+    int size;
+    vector<int> array;
+    unordered_set<int> isSet;
+    //<snap_id, value>
+    vector<vector<pair<int, int>>> archives;
+};
+
+/**
+ * Your SnapshotArray object will be instantiated and called as such:
+ * SnapshotArray* obj = new SnapshotArray(length);
+ * obj->set(index,val);
+ * int param_2 = obj->snap();
+ * int param_3 = obj->get(index,snap_id);
+ */
